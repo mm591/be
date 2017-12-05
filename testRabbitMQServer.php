@@ -13,7 +13,7 @@ function doLogin($email,$password)
     {	
 	return array("returnCode" => '1', 'message'=>"Error connecting to server");
     }
-    $data = $db->getUserInfo($email, $password);
+  $data = $db->getUserInfo($email, $password);
   if($data)
     {	
 	return (array('returnCode' => '0', 'message' => 'Server received request and processed'));
@@ -40,12 +40,20 @@ function doRegister($request)
 function logMessage($request)
 {
 	$logFile = fopen("log.txt", "a");
-
 	fwrite($logFile, $request['message'] .'\n\n');
-
 	return true;
 }
 
+function apiReq($request)
+{
+	$clientReq = new rabbitMQClient("apiExchange.ini","apiServer");
+	$apiRequest = array();
+	$apiRequest['type'] = "api";
+	$apiRequest['brandName'] = $request['brandName'];
+	$response = $client->send_request($apiRequest);
+	
+	return $response;
+}
 function requestProcessor($request)
 {
   echo "Request Received".PHP_EOL;
@@ -63,6 +71,8 @@ function requestProcessor($request)
       return doRegister($request);
     case "log":
       return logMessage($request);
+    case "api";
+      return apiRequest($request);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
