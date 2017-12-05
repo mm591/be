@@ -50,7 +50,7 @@ function apiReq($request)
 	$apiRequest = array();
 	$apiRequest['type'] = "api";
 	$apiRequest['brandName'] = $request['brandName'];
-	$response = $client->send_request($apiRequest);
+	$response = $clientReq->send_request($apiRequest);
 	
 	return $response;
 }
@@ -72,7 +72,7 @@ function requestProcessor($request)
     case "log":
       return logMessage($request);
     case "api";
-      return apiRequest($request);
+      return apiReq($request);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
